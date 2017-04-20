@@ -10,31 +10,26 @@ class ListNode(object):
         self.next = None
 
 class Solution(object):
-    def doSort(self, head, end):
+    def merge(self, part1, part2):
+        dummyHead = ListNode(None)
+        tail = dummyHead
 
-        split = head.next
-        previous = split
-        
-        if head.next == end:
-            return
+        while part1 and part2:
+            if part1.val <= part2.val:
+                tail.next = part1
+                tail = tail.next
+                part1 = part1.next
+            else:
+                tail.next = part2
+                tail = tail.next
+                part2 = part2.next
 
-        if split:
-            current = split.next
+        if part1:
+            tail.next = part1
+        else:
+            tail.next = part2
 
-            while current and current != end.next:
-                if current:
-                    if current.val < split.val:
-                        previous.next = current.next
-                        current.next = head.next
-                        head.next = current
-                    else:
-                        previous = previous.next
-                
-                if previous:
-                    current = previous.next
-
-            self.doSort(head, split)
-            self.doSort(split, end)
+        return dummyHead.next
 
     def sortList(self, head):
         """
@@ -42,23 +37,31 @@ class Solution(object):
         :rtype: ListNode
         """
 
-        dummyHead = ListNode(None)
-        dummyHead.next = head
-        
-        if not head:
-            return None
+        if not head or not head.next:
+            return head
 
-        end = dummyHead
+        fast = head
+        slow = head
 
-        while end.next:
-            end = end.next
+        while fast and fast.next:
+            fast = fast.next
 
-        self.doSort(dummyHead, end)
+            if fast.next:
+                fast = fast.next
+                slow = slow.next
 
-        return dummyHead.next
+
+        part2 = slow.next
+        slow.next = None
+
+        first = self.sortList(head)
+        second = self.sortList(part2)
+
+        mergedHead = self.merge(first, second)
+        return mergedHead
 
 if __name__ == "__main__":
-    input = [3,3,1,3,1,3,3,2,3,2,2,1,1,1,3,2,2,1,1,2,2,2,3,3,1,1,2,2,2,1,2,1,1,2,3,3,2,2,3,2,3,2,2]
+    input = [2]
 
     head = ListNode(1)
     current = head
