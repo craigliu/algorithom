@@ -26,6 +26,9 @@ class Solution(object):
             i = start
             j = 0
             
+            if srclen - start < needlelen:
+                break
+            
             while needlelen > j and srclen > i and haystack[i] == needle[j]:
                 i = i + 1
                 j = j + 1
@@ -33,5 +36,6 @@ class Solution(object):
             if j == needlelen:
                 pos = start
                 break
+        
         
         return pos
